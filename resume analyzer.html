@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume Analyzer</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 600px; margin: auto; }
+    .output { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload Resume</h2>
+    <form id="resumeForm">
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
+      <button type="submit">Analyze</button>
+    </form>
+
+    <div id="result" class="output" style="display: none;">
+      <h3>Analysis Result:</h3>
+      <pre id="analysisOutput"></pre>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("resumeForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("resumeFile");
+      if (!fileInput.files[0]) return alert("Please select a file");
+
+      const formData = new FormData();
+      formData.append("resume", fileInput.files[0]);
+
+      // Call to your backend API
+      const response = await fetch("/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      document.getElementById("analysisOutput").textContent = JSON.stringify(data, null, 2);
+      document.getElementById("result").style.display = "block";
+    });
+  </script>
+</body>
+</html>
